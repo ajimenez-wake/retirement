@@ -1,4 +1,4 @@
-import CalculateRetirementAge as Age
+import CalculateRetirement as Age
 
 
 def test_age():
@@ -7,4 +7,4 @@ def test_age():
                     (66, 4), (66, 6), (66, 8), (66, 10), (67, 0), (67, 0)]
 
     for i in range(len(test_years)):
-        assert Age.calculate_retirement_age(test_years[i]) == test_results[i]
+        assert Age.year_calculate(test_years[i]) == test_results[i]
