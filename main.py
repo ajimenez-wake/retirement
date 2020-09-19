@@ -1,4 +1,4 @@
-from math import floor
+import datetime
 
 
 def main():
@@ -6,94 +6,66 @@ def main():
 
 
 def menu():
-    print("Social Security Full Retirement Age Calculator")
-    birth_year = input("Enter the year of birth or [E]xit: ")
+    print("Social Security Full Retirement Age Calculator\n")
+    try:
+        initial_year = int(input("Enter the year of birth or press any key to exit "))
+        initial_month = int(input("Enter the month of birth "))
 
-    # All calculations done in months to simplify math.
-    age = int(birth_year) * 12
-    if str(birth_year).upper() != "E":
-        birth_month = input("Enter the month of birth: ")
-        birth_month = int(birth_month)
-        age += 12 - birth_month
-        retire_age = get_retire_age(age)
-        retire_month = retire_age % 12
-        retire_year = floor(retire_age / 12)
-    print("Your full retirement age is ", retire_year, " and ", retire_month, " months")
-
-    retirement_month = birth_month + retire_month
-    retirement_year = int(birth_year) + retire_year
-    if retirement_month > 12:
-        retirement_month -= 12
-        retirement_year += 1
-    print("This will be in ", get_month_by_int(retirement_month), retirement_year)
+        ret_year, ret_month = year_calculate(initial_year)
+        date_month, total_year = month_calculate(initial_year, initial_month, ret_month, ret_year)
+        print("your full retirement age is", ret_year, "and", ret_month, "months")
+        print("this will be in", date_month, " of ", total_year)
+    except ValueError:
+        exit()
 
 
-def get_retire_age(age):
-    birth_year = floor(age / 12)
-    print(birth_year)
+# Year Calculation
+def year_calculate(year):
+    ret_year = 65
+    ret_month = 0
 
-    # Birth year 37
-    if birth_year <= 1937:
-        return 780
-
-    # Birth year 38
-    if birth_year == 1938:
-        return 782
-
-    # Birth year 39
-    if birth_year == 1939:
-        return 784
-
-    # Birth year 40
-    if birth_year == 1940:
-        return 786
-
-    # Birth year 41
-    if birth_year == 1941:
-        return 788
-
-    # Birth year 42
-    if birth_year == 1942:
-        return 790
-
-    # Birth year 43 - 54
-    if 1943 <= birth_year <= 1954:
-        return 792
-
-    # Birth year 55
-    if birth_year == 1955:
-        return 794
-
-    # Birth year 56
-    if birth_year == 1956:
-        return 796
-
-    # Birth year 57
-    if birth_year == 1957:
-        return 798
-
-    # Birth year 58
-    if birth_year == 1958:
-        return 800
-
-    # Birth year 59
-    if birth_year == 1959:
-        return 802
-
-    # Birth year > 59
-    if birth_year >= 1960:
-        return 804
+    if 1900 <= year <= 1937:
+        return ret_year, ret_month
+    elif 1937 < year < 1943:
+        count = year - 1937
+        for x in range(count):
+            ret_month += 2
+        return ret_year, ret_month
+    elif 1943 <= year <= 1954:
+        ret_year = 66
+        ret_month = 0
+        return ret_year, ret_month
+    elif 1954 < year < 1960:
+        ret_year = 66
+        count = year - 1954
+        for x in range(count):
+            ret_month += 2
+        return ret_year, ret_month
+    elif year >= 1960:
+        ret_year = 67
+        ret_month = 0
+        return ret_year, ret_month
+    else:
+        print("Invalid year")
+        exit()
 
 
-def get_month_by_int(month):
-    month -= 1
-    months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-    return months[month]
-
-
-def get_current_year():
-    # Leaves a method to call for future rewrite hardcoded for now.
-    return 2020
+# Month calculation
+def month_calculate(year, month, ret_month, ret_year):
+    if 0 < month <= 12:
+        total_month = month + ret_month
+        total_year = year + ret_year
+        if total_month <= 12:
+            final_month = datetime.datetime(1990, total_month, 1)
+        else:
+            total_month -= 12
+            total_year += 1
+            final_month = datetime.datetime(1990, total_month, 1)
+        date_month = final_month.strftime("%B")
+        return date_month, total_year
+    else:
+        print("Invalid month")
+        exit()
 
 
 main()
